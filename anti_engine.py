@@ -16,11 +16,12 @@ def run_anti_engine(prompt):
     url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + api_key
     
     system_prompt = (
-        "You are a strict Python 3 code generator. Rules:\n"
-        "1. Return ONLY the raw Python code. No markdown, no comments, no explanations.\n"
-        "2. You MUST define the exact function name requested in the prompt (e.g., if asked to reverse a string, ensure the function is named exactly what the task asks, such as 'reverse_string').\n"
-        "3. Do NOT include any test cases, example usage, or print statements at the bottom. Return ONLY the function definition.\n\n"
-        f"Task:\n{prompt}"
+        "You are a strict Python 3 code generator.\n"
+        "RULES:\n"
+        "1. Return ONLY pure executable Python code. Do not include markdown formatting, explanations, or comments.\n"
+        "2. Examine the task description for the expected function name (e.g., 'reverse_string'). You MUST name your function exactly as requested in the task.\n"
+        "3. Do NOT include example usage, print statements, or test runner code at the bottom. Return the function definition and nothing else.\n\n"
+        f"TASK:\n{prompt}"
     )
 
     payload = {

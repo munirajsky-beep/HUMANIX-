@@ -2,21 +2,14 @@ import requests
 
 url = "https://humanix-1.onrender.com/verify"
 
-headers = {
-    "X-API-Key": "humanix-enterprise-secret-key-2026",
-    "Content-Type": "application/json"
-}
-
 payload = {
-    "task": "Write a python function named reverse_string that reverses a given word.",
-    "constraint": "Do not use for-loops or while-loops. Use recursion or python slicing.",
-    "blocked_nodes": ["FOR_LOOPS", "WHILE_LOOPS"],
-    "test_assertion": "assert reverse_string('hello') == 'olleh', 'String was not reversed correctly'"
+    "task": "Write a Python function named 'reverse_string' that accepts a string 's' and returns the reversed string.",
+    "constraint": "Do not use standard library imports."
 }
 
-response = requests.post(url, json=payload, headers=headers)
-print("Status Code:", response.status_code)
 try:
+    response = requests.post(url, json=payload)
+    print("Status Code:", response.status_code)
     print("Response Body:", response.json())
-except requests.exceptions.JSONDecodeError:
-    print("Server Error Text:", response.text)
+except Exception as e:
+    print("Error connecting to server:", e)
