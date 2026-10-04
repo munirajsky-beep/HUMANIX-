@@ -15,7 +15,14 @@ def run_human_engine(prompt):
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
     url = "[https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=](https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=)" + api_key
     
-    system_prompt = "You are a code generation engine. Return strictly valid Python 3 code. No markdown, no explanations, no conversational text.\n\n" + prompt
+    # Stricter prompt enforcing exact naming and pure function definition
+    system_prompt = (
+        "You are a strict Python 3 code generator. Rules:\n"
+        "1. Return ONLY the raw Python code. No markdown, no comments, no explanations.\n"
+        "2. You MUST define the exact function name requested in the prompt (e.g., if asked to reverse a string, ensure the function is named exactly what the task asks, such as 'reverse_string').\n"
+        "3. Do NOT include any test cases, example usage, or print statements at the bottom. Return ONLY the function definition.\n\n"
+        f"Task:\n{prompt}"
+    )
 
     payload = {
         "contents": [{"parts": [{"text": system_prompt}]}]
@@ -29,6 +36,5 @@ def run_human_engine(prompt):
         raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
         return clean_code_response(raw_text)
     except Exception as e:
-        # Removes quotes so the error message doesn't break Python syntax
         safe_error = str(e).replace("'", "").replace('"', "")
         return f"print('''Human Engine Error: {safe_error}''')"
