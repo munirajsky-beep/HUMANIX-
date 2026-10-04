@@ -10,7 +10,6 @@ def run_engine_with_retries(engine_name, engine_func, task_prompt, max_retries=3
     last_error = ""
     
     for attempt in range(1, max_retries + 1):
-        # On retry, feed the exact error back to the AI so it can correct it
         if attempt == 1:
             current_prompt = task_prompt
         else:
@@ -28,6 +27,10 @@ def run_engine_with_retries(engine_name, engine_func, task_prompt, max_retries=3
             
     logger.error(f"❌ {engine_name} exhausted all retries and failed.\n")
     return False, None, max_retries
+
+def run_self_correcting_engine(task_prompt):
+    """Alias for app.py import compatibility"""
+    return orchestrate(task_prompt)
 
 def orchestrate(task_prompt):
     # 1. Try Human Engine first
