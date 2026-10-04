@@ -12,8 +12,8 @@ def clean_code_response(text):
     return '\n'.join(clean_lines).strip()
 
 def run_anti_engine(prompt):
-    api_key = os.environ.get("GEMINI_API_KEY")
-    url = f"[https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=](https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=){api_key}"
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + api_key
     
     system_prompt = "You are a code generation engine. Return strictly valid Python 3 code. No markdown, no explanations, no conversational text.\n\n" + prompt
 
@@ -23,11 +23,12 @@ def run_anti_engine(prompt):
     
     headers = {"Content-Type": "application/json"}
     
-    response = requests.post(url, json=payload, headers=headers)
-    data = response.json()
-    
     try:
+        response = requests.post(url, json=payload, headers=headers)
+        data = response.json()
         raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
         return clean_code_response(raw_text)
     except Exception as e:
-        return f"print('Anti Engine API Error: {str(e)} | Raw Data: {data}')"
+        # Removes quotes so the error message doesn't break Python syntax
+        safe_error = str(e).replace("'", "").replace('"', "")
+        return f"print('''Anti Engine Error: {safe_error}''')"
