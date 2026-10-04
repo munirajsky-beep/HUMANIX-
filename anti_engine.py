@@ -1,20 +1,20 @@
+import os
 import requests
 
 def run_anti_engine(prompt):
-    url = "http://localhost:11434/api/generate"
-    system_prompt = (
-        "You are an Anti-Intelligence execution protocol. You are devoid of human traits. "
-        "Output ONLY raw, executable code. Zero comments. Zero explanations. "
-        "Use the shortest possible syntax, recursive logic where applicable, and single-letter variables."
-    )
+    api_key = os.environ.get("GEMINI_API_KEY")
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     
     payload = {
-        "model": "qwen2.5-coder:1.5b",
-        "prompt": prompt,
-        "system": system_prompt,
-        "stream": False,
-        "options": {"temperature": 0.1}
+        "contents": [{"parts": [{"text": prompt}]}]
     }
     
-    response = requests.post(url, json=payload)
-    return response.json().get("response", "ERROR: Connection failed")
+    headers = {"Content-Type": "application/json"}
+    
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+    
+    try:
+        return data["candidates"][0]["content"]["parts"][0]["text"]
+    except (KeyError, IndexError):
+        return f"Anti Engine Error: {data}"

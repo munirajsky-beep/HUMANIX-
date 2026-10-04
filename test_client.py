@@ -1,6 +1,6 @@
 import requests
 
-url = "http://127.0.0.1:8000/verify"
+url = "https://humanix-1.onrender.com/verify"
 
 headers = {
     "X-API-Key": "humanix-enterprise-secret-key-2026",
