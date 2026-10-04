@@ -16,4 +16,7 @@ payload = {
 
 response = requests.post(url, json=payload, headers=headers)
 print("Status Code:", response.status_code)
-print("Response Body:", response.json())
+try:
+    print("Response Body:", response.json())
+except requests.exceptions.JSONDecodeError:
+    print("Server Error Text:", response.text)
